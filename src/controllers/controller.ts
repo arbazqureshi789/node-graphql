@@ -22,3 +22,34 @@ export const getTodos: RequestHandler = (req, res, next)=>{
        })
    }
 };
+
+export const updateTodos:RequestHandler<{id: string}> = (req, res, next)=>{
+    const todoId = req.params.id
+    const index = TODOS.findIndex(todo => todo.id === todoId);
+
+    const updatedText = (req.body as {text: string}).text;
+
+    if(index < 0){
+        throw new Error("Item not found");
+    }else{
+        TODOS[index].text = updatedText;
+
+        res.status(200).json({message:"Todo updated", updatedTodo: TODOS[index]});
+    }
+
+}
+
+export const deleteTodos:RequestHandler<{id: string}> = (req, res, next)=>{
+    const delId = req.params.id;
+    const index = TODOS.findIndex(todo => todo.id === delId);
+
+    let deletedTodo;
+
+    if(index < 0){
+        throw new Error("Item not found");
+    }else{
+        deletedTodo = TODOS[index]; 
+        TODOS.splice(index, 1);
+        res.status(200).json({message:"Todo deleted", deletedTodo: deletedTodo});
+    }
+}
